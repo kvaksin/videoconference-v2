@@ -5,16 +5,36 @@ services:
     env: node
     plan: starter
     buildCommand: |
+      set -e
       echo "==> Current directory: $(pwd)"
+      echo "==> Listing root directory contents:"
+      ls -la
+      echo ""
       echo "==> Building server..."
-      cd server && npm ci && npm run build && cd ..
+      cd server
+      npm ci
+      npm run build
+      echo "==> Server dist contents:"
+      ls -la dist/
+      cd ..
+      echo ""
       echo "==> Building client..."
-      cd client && npm ci && npm run build && cd ..
-      echo "==> Copying client build to server public directory..."
+      cd client
+      npm ci
+      npm run build
+      echo "==> Client dist contents:"
+      ls -la dist/
+      cd ..
+      echo ""
+      echo "==> Current location: $(pwd)"
+      echo "==> Creating public directory..."
       mkdir -p server/dist/public
+      echo "==> Copying client build to server/dist/public/..."
       cp -rv client/dist/* server/dist/public/
-      echo "==> Verifying files were copied..."
+      echo "==> Verifying copy completed..."
       ls -la server/dist/public/
+      echo "==> Checking if index.html exists:"
+      test -f server/dist/public/index.html && echo "✅ index.html found!" || echo "❌ index.html NOT found!"
       echo "==> Build complete!"
     startCommand: cd server && npm start
     healthCheckPath: /health
