@@ -8,22 +8,24 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "prebuild": "node scripts/prebuild.cjs",
+    "build": "npm run prebuild && tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@types/axios": "^0.9.36",
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "@vitejs/plugin-react": "^4.2.1",
+    "axios": "^1.6.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.20.1",
-    "axios": "^1.6.2",
     "socket.io-client": "^4.7.2",
     "typescript": "^5.2.2",
-    "@types/react": "^18.2.43",
-    "@types/react-dom": "^18.2.17",
-    "vite": "^5.0.8",
-    "@vitejs/plugin-react": "^4.2.1"
+    "vite": "^5.0.8"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.14.0",

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { apiService } from '../services/api.service';
@@ -97,11 +97,11 @@ export default function RequestMeetingPage() {
     const startDate = new Date(firstDay);
     startDate.setDate(startDate.getDate() - firstDay.getDay());
     
-    const calendar = [];
+    const calendar: Date[][] = [];
     const currentDateObj = new Date(startDate);
     
     for (let week = 0; week < 6; week++) {
-      const weekDays = [];
+      const weekDays: Date[] = [];
       for (let day = 0; day < 7; day++) {
         weekDays.push(new Date(currentDateObj));
         currentDateObj.setDate(currentDateObj.getDate() + 1);

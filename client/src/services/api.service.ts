@@ -1,8 +1,7 @@
-import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
+import axios from 'axios';
 import type {
   User,
   Meeting,
-  ApiResponse,
   LoginCredentials,
   RegisterData,
   AuthResponse,
@@ -15,7 +14,7 @@ import type {
 } from '../types';
 
 class ApiService {
-  private api: AxiosInstance;
+  private api: any;
 
   constructor() {
     // Use environment variable in production, localhost in development
@@ -40,7 +39,7 @@ class ApiService {
     });
 
     // Add auth token to requests
-    this.api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+    this.api.interceptors.request.use((config: any) => {
       const token = localStorage.getItem('token');
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
@@ -50,8 +49,8 @@ class ApiService {
 
     // Handle 401 errors
     this.api.interceptors.response.use(
-      (response) => response,
-      (error) => {
+      (response: any) => response,
+      (error: any) => {
         if (error.response?.status === 401) {
           localStorage.removeItem('token');
           window.location.href = '/login';
@@ -63,22 +62,22 @@ class ApiService {
 
   // Auth endpoints
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
-    const response = await this.api.post<ApiResponse<AuthResponse>>('/auth/login', credentials);
+    const response = await this.api.post('/auth/login', credentials);
     return response.data.data!;
   }
 
   async register(data: RegisterData): Promise<AuthResponse> {
-    const response = await this.api.post<ApiResponse<AuthResponse>>('/auth/register', data);
+    const response = await this.api.post('/auth/register', data);
     return response.data.data!;
   }
 
   async getCurrentUser(): Promise<User> {
-    const response = await this.api.get<ApiResponse<User>>('/auth/me');
+    const response = await this.api.get('/auth/me');
     return response.data.data!;
   }
 
   async updateProfile(data: { name: string; email: string }): Promise<User> {
-    const response = await this.api.put<ApiResponse<User>>('/auth/profile', data);
+    const response = await this.api.put('/auth/profile', data);
     return response.data.data!;
   }
 
@@ -88,22 +87,22 @@ class ApiService {
 
   // Meeting endpoints
   async getMeetings(): Promise<Meeting[]> {
-    const response = await this.api.get<ApiResponse<Meeting[]>>('/meetings');
+    const response = await this.api.get('/meetings');
     return response.data.data || [];
   }
 
   async getMeeting(id: string): Promise<Meeting> {
-    const response = await this.api.get<ApiResponse<Meeting>>(`/meetings/${id}`);
+    const response = await this.api.get(`/meetings/${id}`);
     return response.data.data!;
   }
 
   async createMeeting(data: CreateMeetingData): Promise<Meeting> {
-    const response = await this.api.post<ApiResponse<Meeting>>('/meetings', data);
+    const response = await this.api.post('/meetings', data);
     return response.data.data!;
   }
 
   async updateMeeting(id: string, data: UpdateMeetingData): Promise<Meeting> {
-    const response = await this.api.put<ApiResponse<Meeting>>(`/meetings/${id}`, data);
+    const response = await this.api.put(`/meetings/${id}`, data);
     return response.data.data!;
   }
 
@@ -112,46 +111,46 @@ class ApiService {
   }
 
   async startMeeting(id: string): Promise<Meeting> {
-    const response = await this.api.post<ApiResponse<Meeting>>(`/meetings/${id}/start`);
+    const response = await this.api.post(`/meetings/${id}/start`);
     return response.data.data!;
   }
 
   async endMeeting(id: string): Promise<Meeting> {
-    const response = await this.api.post<ApiResponse<Meeting>>(`/meetings/${id}/end`);
+    const response = await this.api.post(`/meetings/${id}/end`);
     return response.data.data!;
   }
 
   // Admin endpoints
   async getAllUsers(): Promise<User[]> {
-    const response = await this.api.get<ApiResponse<User[]>>('/admin/users');
+    const response = await this.api.get('/admin/users');
     return response.data.data || [];
   }
 
   async getAllMeetings(): Promise<Meeting[]> {
-    const response = await this.api.get<ApiResponse<Meeting[]>>('/admin/meetings');
+    const response = await this.api.get('/admin/meetings');
     return response.data.data || [];
   }
 
   // Availability endpoints
   async setAvailability(availability: Omit<Availability, 'id' | 'userId' | 'createdAt' | 'updatedAt'>[]): Promise<Availability[]> {
-    const response = await this.api.put<ApiResponse<Availability[]>>('/availability', { availability });
+    const response = await this.api.put('/availability', { availability });
     return response.data.data!;
   }
 
   async getMyAvailability(): Promise<Availability[]> {
-    const response = await this.api.get<ApiResponse<Availability[]>>('/availability');
+    const response = await this.api.get('/availability');
     return response.data.data || [];
   }
 
   async getAvailableSlots(userId: string, startDate: string, endDate: string): Promise<AvailabilitySlot[]> {
-    const response = await this.api.get<ApiResponse<AvailabilitySlot[]>>(
+    const response = await this.api.get(
       `/availability/${userId}/slots?startDate=${startDate}&endDate=${endDate}`
     );
     return response.data.data || [];
   }
 
   async getMyAvailableSlots(startDate: string, endDate: string): Promise<AvailabilitySlot[]> {
-    const response = await this.api.get<ApiResponse<AvailabilitySlot[]>>(
+    const response = await this.api.get(
       `/availability/slots?startDate=${startDate}&endDate=${endDate}`
     );
     return response.data.data || [];
@@ -159,44 +158,44 @@ class ApiService {
 
   // Meeting Request endpoints
   async createMeetingRequest(data: CreateMeetingRequestData): Promise<MeetingRequest> {
-    const response = await this.api.post<ApiResponse<MeetingRequest>>('/meeting-requests', data);
+    const response = await this.api.post('/meeting-requests', data);
     return response.data.data!;
   }
 
   async getMyMeetingRequests(): Promise<MeetingRequest[]> {
-    const response = await this.api.get<ApiResponse<MeetingRequest[]>>('/meeting-requests');
+    const response = await this.api.get('/meeting-requests');
     return response.data.data || [];
   }
 
   async getMyRequestsMade(): Promise<MeetingRequest[]> {
-    const response = await this.api.get<ApiResponse<MeetingRequest[]>>('/meeting-requests/made');
+    const response = await this.api.get('/meeting-requests/made');
     return response.data.data || [];
   }
 
   async getMeetingRequest(id: string): Promise<MeetingRequest> {
-    const response = await this.api.get<ApiResponse<MeetingRequest>>(`/meeting-requests/${id}`);
+    const response = await this.api.get(`/meeting-requests/${id}`);
     return response.data.data!;
   }
 
   async approveMeetingRequest(id: string): Promise<{ request: MeetingRequest; meeting: Meeting }> {
-    const response = await this.api.post<ApiResponse<{ request: MeetingRequest; meeting: Meeting }>>(
+    const response = await this.api.post(
       `/meeting-requests/${id}/approve`
     );
     return response.data.data!;
   }
 
   async rejectMeetingRequest(id: string): Promise<MeetingRequest> {
-    const response = await this.api.post<ApiResponse<MeetingRequest>>(`/meeting-requests/${id}/reject`);
+    const response = await this.api.post(`/meeting-requests/${id}/reject`);
     return response.data.data!;
   }
 
   async cancelMeetingRequest(id: string): Promise<MeetingRequest> {
-    const response = await this.api.post<ApiResponse<MeetingRequest>>(`/meeting-requests/${id}/cancel`);
+    const response = await this.api.post(`/meeting-requests/${id}/cancel`);
     return response.data.data!;
   }
 
   async getPendingRequestsCount(): Promise<number> {
-    const response = await this.api.get<ApiResponse<{ count: number }>>('/meeting-requests/pending/count');
+    const response = await this.api.get('/meeting-requests/pending/count');
     return response.data.data?.count || 0;
   }
 
@@ -205,22 +204,22 @@ class ApiService {
   }
 
   async getStats(): Promise<any> {
-    const response = await this.api.get<ApiResponse>('/admin/stats');
+    const response = await this.api.get('/admin/stats');
     return response.data.data;
   }
 
   async createUser(userData: { email: string; password: string; name: string; role?: string; license?: string }): Promise<User> {
-    const response = await this.api.post<ApiResponse<User>>('/admin/users', userData);
+    const response = await this.api.post('/admin/users', userData);
     return response.data.data!;
   }
 
   async updateUserLicense(id: string, license: string): Promise<User> {
-    const response = await this.api.put<ApiResponse<User>>(`/admin/users/${id}/license`, { license });
+    const response = await this.api.put(`/admin/users/${id}/license`, { license });
     return response.data.data!;
   }
 
   async updateUserRole(id: string, role: string): Promise<User> {
-    const response = await this.api.put<ApiResponse<User>>(`/admin/users/${id}/role`, { role });
+    const response = await this.api.put(`/admin/users/${id}/role`, { role });
     return response.data.data!;
   }
 }

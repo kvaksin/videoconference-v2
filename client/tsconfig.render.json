@@ -8,7 +8,7 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
 
-    /* Bundler mode with fallback */
+    /* More compatible module resolution */
     "moduleResolution": "node",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
@@ -16,21 +16,20 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
-    /* Linting - relaxed for compatibility */
+    /* Linting */
     "strict": true,
-    "noImplicitAny": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     
-    /* Enhanced type resolution */
+    /* Explicit type resolution */
     "typeRoots": ["./node_modules/@types"],
     "types": ["react", "react-dom"],
     "baseUrl": ".",
     "paths": {
-      "*": ["node_modules/@types/*", "src/types/*"]
+      "*": ["node_modules/@types/*"]
     }
   },
-  "include": ["src", "src/types/global.d.ts"],
+  "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
