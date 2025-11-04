@@ -266,7 +266,7 @@ const startServer = async () => {
       console.log(`
 ╔════════════════════════════════════════════════════════╗
 ║                                                        ║
-║  🚀 Video Conference Server Running                   ║
+║  🚀 VaxCall Server Running                            ║
 ║                                                        ║
 ║  Port:        ${config.port}                              ║
 ║  Environment: ${config.nodeEnv}                       ║

@@ -1,6 +1,8 @@
 # Video Conference Application
 
-A modern, comprehensive video conferencing and meeting scheduling platform built with React, TypeScript, Express, and WebRTC.
+# VaxCall - Video Conference Platform
+
+A modern, feature-rich video conferencing platform built with React, TypeScript, Node.js, and WebRTC.
 
 ## 🚀 Quick Deploy
 

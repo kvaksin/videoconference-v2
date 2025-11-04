@@ -361,7 +361,7 @@ export default function GuestMeetingPage() {
         <div className="nav-container">
           <div>
             <h2 className="card-title-white" style={{ margin: 0, fontSize: '18px' }}>
-              {meetingInfo?.title || 'Video Conference'}
+              {meetingInfo?.title || 'VaxCall Meeting'}
             </h2>
             <p className="card-description-white" style={{ margin: '4px 0 0 0', fontSize: '14px', opacity: 0.8 }}>
               Joined as: {guestInfo.name} (Guest) • {participants.length} participants

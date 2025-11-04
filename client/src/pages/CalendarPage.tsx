@@ -192,13 +192,13 @@ export default function CalendarPage() {
       
       return [
         'BEGIN:VEVENT',
-        `UID:${meeting.id}@videoconference.app`,
+        `UID:${meeting.id}@vaxcall.app`,
         `DTSTAMP:${formatDate(new Date())}`,
         `DTSTART:${formatDate(startDate)}`,
         `DTEND:${formatDate(endDate)}`,
         `SUMMARY:${meeting.title}`,
         `DESCRIPTION:${meeting.description || ''}`,
-        `LOCATION:Video Conference Meeting`,
+        `LOCATION:VaxCall Meeting`,
         `URL:${window.location.origin}/meeting/${meeting.id}`,
         'END:VEVENT'
       ].join('\r\n');
@@ -207,7 +207,7 @@ export default function CalendarPage() {
     const icsContent = [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
-      'PRODID:-//Video Conference App//Calendar//EN',
+      'PRODID:-//VaxCall//Calendar//EN',
       'CALSCALE:GREGORIAN',
       events,
       'END:VCALENDAR'

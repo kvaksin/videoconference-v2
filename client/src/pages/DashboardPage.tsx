@@ -99,7 +99,7 @@ export default function DashboardPage() {
         <div className="nav-container">
           <div className="nav-logo">
             <span className="logo-icon">📹</span>
-            <span className="logo-text">VideoConf</span>
+            <span className="logo-text">VaxCall</span>
           </div>
           <div className="nav-links">
             <span className="user-greeting">Welcome, {user?.name}!</span>

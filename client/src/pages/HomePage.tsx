@@ -33,8 +33,8 @@ const HomePage: React.FC = () => {
       <nav className="navbar">
         <div className="nav-container">
           <div className="nav-logo">
-            <span className="logo-icon">📹</span>
-            <span className="logo-text">VideoConnect</span>
+            <span className="logo-icon">�</span>
+            <span className="logo-text">VaxCall</span>
           </div>
           <div className="nav-links">
             {isAuthenticated ? (
@@ -212,7 +212,7 @@ const HomePage: React.FC = () => {
           <div className="cta-content">
             <h2 className="cta-title">Ready to Transform Your Meetings?</h2>
             <p className="cta-subtitle">
-              Join thousands of teams already using VideoConnect for their daily collaboration.
+              Join thousands of teams already using VaxCall for their daily collaboration.
             </p>
             {!isAuthenticated && (
               <Link to="/register" className="btn btn-primary btn-large">
@@ -229,7 +229,7 @@ const HomePage: React.FC = () => {
           <div className="footer-content">
             <div className="footer-brand">
               <span className="logo-icon">📹</span>
-              <span className="logo-text">VideoConnect</span>
+              <span className="logo-text">VaxCall</span>
             </div>
             <div className="footer-links">
               <div className="footer-column">
@@ -253,7 +253,7 @@ const HomePage: React.FC = () => {
             </div>
           </div>
           <div className="footer-bottom">
-            <p>&copy; 2025 VideoConnect. All rights reserved.</p>
+            <p>&copy; 2025 VaxCall. All rights reserved.</p>
           </div>
         </div>
       </footer>

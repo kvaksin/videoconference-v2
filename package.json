@@ -1,7 +1,7 @@
 {
-  "name": "videoconference-app",
-  "version": "2.0.0",
-  "description": "Video conference application with React, TypeScript, and WebRTC",
+  "name": "vaxcall",
+  "version": "0.1.0",
+  "description": "VaxCall - Professional video conference platform with React, TypeScript, and WebRTC",
   "private": true,
   "scripts": {
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",

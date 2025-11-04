@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
-  title: Video Conference API
-  description: API for video conferencing application
+  title: VaxCall API
+  description: API for VaxCall video conferencing platform
   version: 2.0.0
 servers:
   - url: https://videoconference-v2.onrender.com

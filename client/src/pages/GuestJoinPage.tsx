@@ -113,7 +113,7 @@ export default function GuestJoinPage() {
                     </div>
                   )}
                   <p className="card-description">
-                    Enter your name to join this video conference meeting
+                    Enter your name to join this VaxCall meeting
                   </p>
                 </div>
 

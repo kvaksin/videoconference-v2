@@ -1,7 +1,7 @@
 services:
   # Single Service - Backend + Frontend
   - type: web
-    name: videoconference-app
+    name: vaxcall-app
     env: node
     plan: starter
     buildCommand: |
@@ -71,7 +71,7 @@ services:
       - key: ADMIN_PASSWORD
         generateValue: true
     disk:
-      name: videoconference-data
+      name: vaxcall-data
       mountPath: /var/data
       sizeGB: 1
 
