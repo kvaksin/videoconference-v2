@@ -10,31 +10,23 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        fromService:
-          type: web
-          name: videoconference-api
-          property: port
       - key: JWT_SECRET
         generateValue: true
       - key: CORS_ORIGIN
-        fromService:
-          type: web
-          name: videoconference-web
-          property: url
+        value: https://videoconference-web.onrender.com
       - key: RATE_LIMIT_WINDOW_MS
         value: "900000"
       - key: RATE_LIMIT_MAX_REQUESTS
         value: "100"
       - key: DATA_DIR
-        value: "/opt/render/project/src/data"
+        value: "/var/data"
       - key: ADMIN_EMAIL
         value: "admin@example.com"
       - key: ADMIN_PASSWORD
         generateValue: true
     disk:
       name: videoconference-data
-      mountPath: /opt/render/project/src/data
+      mountPath: /var/data
       sizeGB: 1
 
   # Frontend Web Application
@@ -47,10 +39,7 @@ services:
     pullRequestPreviewsEnabled: false
     envVars:
       - key: VITE_API_URL
-        fromService:
-          type: web
-          name: videoconference-api
-          property: url
+        value: https://videoconference-api.onrender.com
     routes:
       - type: rewrite
         source: /*

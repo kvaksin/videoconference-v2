@@ -1,0 +1,45 @@
+# Single Service Deployment Configuration
+# Use this ONLY if you cannot use Blueprint (two services)
+
+services:
+  - type: web
+    name: videoconference-v2
+    env: node
+    plan: starter
+    buildCommand: |
+      # Install server dependencies
+      cd server && npm ci && npm run build && cd ..
+      # Install and build client
+      cd client && npm ci && npm run build && cd ..
+      # Move client build to server for serving
+      mkdir -p server/dist/public
+      cp -r client/dist/* server/dist/public/
+    startCommand: cd server && npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        generateValue: true
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGIN
+        value: "*"
+      - key: RATE_LIMIT_WINDOW_MS
+        value: "900000"
+      - key: RATE_LIMIT_MAX_REQUESTS
+        value: "100"
+      - key: DATA_DIR
+        value: "/var/data"
+      - key: ADMIN_EMAIL
+        value: "admin@example.com"
+      - key: ADMIN_PASSWORD
+        generateValue: true
+      - key: SERVE_STATIC
+        value: "true"
+    disk:
+      name: videoconference-data
+      mountPath: /var/data
+      sizeGB: 1
+
+databases: []
