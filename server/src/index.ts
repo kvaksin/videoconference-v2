@@ -218,6 +218,29 @@ const startServer = async () => {
   try {
     await authService.initializeAdmin();
 
+    // In production, verify static files exist
+    if (config.nodeEnv === 'production') {
+      const fs = require('fs');
+      const publicDir = path.join(__dirname, 'public');
+      const indexPath = path.join(publicDir, 'index.html');
+      
+      console.log(`Checking for static files in: ${publicDir}`);
+      if (fs.existsSync(publicDir)) {
+        const files = fs.readdirSync(publicDir);
+        console.log(`Found ${files.length} files/folders in public directory:`, files);
+        
+        if (!fs.existsSync(indexPath)) {
+          console.error(`❌ WARNING: index.html not found at ${indexPath}`);
+          console.error('The frontend will not be accessible!');
+        } else {
+          console.log(`✅ Frontend files found - app will serve at /`);
+        }
+      } else {
+        console.error(`❌ WARNING: Public directory not found at ${publicDir}`);
+        console.error('Static files were not copied during build. Check build logs.');
+      }
+    }
+
     httpServer.listen(config.port, () => {
       console.log(`
 ╔════════════════════════════════════════════════════════╗

@@ -5,14 +5,17 @@ services:
     env: node
     plan: starter
     buildCommand: |
-      echo "Building server..."
+      echo "==> Current directory: $(pwd)"
+      echo "==> Building server..."
       cd server && npm ci && npm run build && cd ..
-      echo "Building client..."
+      echo "==> Building client..."
       cd client && npm ci && npm run build && cd ..
-      echo "Copying client build to server..."
+      echo "==> Copying client build to server public directory..."
       mkdir -p server/dist/public
-      cp -r client/dist/* server/dist/public/
-      echo "Build complete!"
+      cp -rv client/dist/* server/dist/public/
+      echo "==> Verifying files were copied..."
+      ls -la server/dist/public/
+      echo "==> Build complete!"
     startCommand: cd server && npm start
     healthCheckPath: /health
     envVars:
