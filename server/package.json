@@ -9,7 +9,8 @@
   },
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc && node scripts/ensure-data-dir.js",
+    "prebuild": "node scripts/prebuild.js",
+    "build": "npm run prebuild && tsc && node scripts/ensure-data-dir.js",
     "start": "node scripts/ensure-data-dir.js && node dist/index.js",
     "lint": "eslint src --ext .ts",
     "typecheck": "tsc --noEmit"
