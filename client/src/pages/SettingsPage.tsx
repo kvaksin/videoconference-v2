@@ -34,7 +34,29 @@ export default function SettingsPage() {
 
   useEffect(() => {
     loadUserData();
+    loadPreferences();
   }, []);
+
+  useEffect(() => {
+    // Apply dark mode to document
+    if (preferences.darkMode) {
+      document.documentElement.classList.add('dark-mode');
+    } else {
+      document.documentElement.classList.remove('dark-mode');
+    }
+  }, [preferences.darkMode]);
+
+  const loadPreferences = () => {
+    const saved = localStorage.getItem('userPreferences');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        setPreferences(parsed);
+      } catch (error) {
+        console.error('Failed to parse preferences:', error);
+      }
+    }
+  };
 
   const loadUserData = async () => {
     try {

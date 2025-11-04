@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
@@ -111,6 +112,21 @@ function AppRoutes() {
 }
 
 function App() {
+  useEffect(() => {
+    // Load and apply dark mode preference on app start
+    const savedPreferences = localStorage.getItem('userPreferences');
+    if (savedPreferences) {
+      try {
+        const preferences = JSON.parse(savedPreferences);
+        if (preferences.darkMode) {
+          document.documentElement.classList.add('dark-mode');
+        }
+      } catch (error) {
+        console.error('Failed to load preferences:', error);
+      }
+    }
+  }, []);
+
   return (
     <Router>
       <AuthProvider>
