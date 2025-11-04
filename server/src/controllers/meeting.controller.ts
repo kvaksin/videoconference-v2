@@ -83,7 +83,7 @@ export class MeetingController {
         return;
       }
 
-      // For guest users, return limited meeting info
+      // For guest users, return limited meeting info (but include roomId for joining)
       const meetingData = req.isGuest ? {
         id: meeting.id,
         title: meeting.title,
@@ -91,6 +91,7 @@ export class MeetingController {
         scheduledAt: meeting.scheduledAt,
         duration: meeting.duration,
         status: meeting.status,
+        roomId: meeting.roomId, // Guests need this to join the correct room
       } : meeting;
 
       res.json({

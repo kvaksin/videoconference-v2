@@ -41,13 +41,19 @@ export default function MeetingPage() {
       const data = await apiService.getMeeting(id!);
       setMeeting(data);
 
-      if (data.status === 'scheduled') {
+      // Start meeting if it's scheduled OR if it's active but doesn't have a roomId yet
+      if (data.status === 'scheduled' || (data.status === 'active' && !data.roomId)) {
         await apiService.startMeeting(id!);
         const updated = await apiService.getMeeting(id!);
         setMeeting(updated);
-      }
-
-      if (data.roomId && user) {
+        
+        // Use updated meeting data for joining
+        if (updated.roomId && user) {
+          socketService.joinRoom(updated.roomId, user.id);
+          setupSocketListeners(updated.roomId);
+        }
+      } else if (data.roomId && user) {
+        // Meeting already has roomId, join directly
         socketService.joinRoom(data.roomId, user.id);
         setupSocketListeners(data.roomId);
       }
