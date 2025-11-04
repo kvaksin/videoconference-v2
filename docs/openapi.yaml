@@ -5,9 +5,9 @@ info:
   version: 2.0.0
 servers:
   - url: https://videoconference-v2.onrender.com
-    description: Production server
+    description: Production (Render deployment)
   - url: http://localhost:3001
-    description: Development server
+    description: Local development
 
 components:
   securitySchemes:
