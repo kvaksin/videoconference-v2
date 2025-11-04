@@ -15,6 +15,7 @@ export default function GuestMeetingPage() {
   const [messages, setMessages] = useState<any[]>([]);
   const [messageInput, setMessageInput] = useState('');
   const [meetingInfo, setMeetingInfo] = useState<any>(null);
+  const [roomId, setRoomId] = useState<string>('');
   
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
@@ -32,9 +33,9 @@ export default function GuestMeetingPage() {
     setGuestInfo(guest);
 
     // Load meeting info first, then initialize socket
-    loadMeetingInfo().then(() => {
+    loadMeetingInfo().then((meeting) => {
       // Initialize socket connection for guest after meeting info is loaded
-      initializeGuestSocket(guest);
+      initializeGuestSocket(guest, meeting);
     }).catch((error) => {
       console.error('Failed to initialize guest meeting:', error);
       navigate(`/guest/join/${id}`);
@@ -81,13 +82,13 @@ export default function GuestMeetingPage() {
     await initializeMedia();
   };
 
-  const loadMeetingInfo = async (): Promise<void> => {
+  const loadMeetingInfo = async (): Promise<any> => {
     try {
       const response = await fetch(`/api/meetings/${id}`);
       if (response.ok) {
         const data = await response.json();
         setMeetingInfo(data.data);
-        return Promise.resolve();
+        return Promise.resolve(data.data);
       } else {
         return Promise.reject('Failed to load meeting');
       }
@@ -97,22 +98,24 @@ export default function GuestMeetingPage() {
     }
   };
 
-  const initializeGuestSocket = (guest: any) => {
+  const initializeGuestSocket = (guest: any, meeting: any) => {
     // Connect to socket as guest
     socketService.connect();
     
     // Use the same roomId that authenticated users use
-    const roomId = meetingInfo?.roomId || id;
-    console.log('Guest joining room:', roomId, 'with guest info:', guest);
+    const actualRoomId = meeting?.roomId || id;
+    setRoomId(actualRoomId);
+    console.log('Guest joining room:', actualRoomId, 'with guest info:', guest);
+    console.log('Meeting data:', meeting);
     
     // Join the same meeting room that authenticated users join
     const guestUserId = `guest-${Date.now()}`;
     setGuestUserId(guestUserId);
-    socketService.joinRoom(roomId!, guestUserId);
+    socketService.joinRoom(actualRoomId!, guestUserId);
     
     // Emit guest join event
     socketService.emit('guest-joined', {
-      meetingId: roomId,
+      meetingId: actualRoomId,
       guestInfo: {
         name: guest.name,
         isGuest: true,
@@ -298,7 +301,7 @@ export default function GuestMeetingPage() {
 
   const sendMessage = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!messageInput.trim() || !guestInfo) return;
+    if (!messageInput.trim() || !guestInfo || !roomId) return;
 
     const message = {
       id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -310,8 +313,7 @@ export default function GuestMeetingPage() {
     };
 
     // Use the same chat message event as authenticated users
-    const roomId = meetingInfo?.roomId || id;
-    socketService.sendChatMessage(roomId!, message);
+    socketService.sendChatMessage(roomId, message);
     
     setMessages(prev => [...prev, message]);
     setMessageInput('');
@@ -323,17 +325,18 @@ export default function GuestMeetingPage() {
     }
     
     // Leave the room using the same method as authenticated users
-    const roomId = meetingInfo?.roomId || id;
-    socketService.leaveRoom(roomId!, guestUserId);
-    
-    // Emit guest left event
-    socketService.emit('guest-left', {
-      meetingId: roomId,
-      guestInfo: {
-        ...guestInfo,
-        tempId: guestUserId
-      }
-    });
+    if (roomId && guestUserId) {
+      socketService.leaveRoom(roomId, guestUserId);
+      
+      // Emit guest left event
+      socketService.emit('guest-left', {
+        meetingId: roomId,
+        guestInfo: {
+          ...guestInfo,
+          tempId: guestUserId
+        }
+      });
+    }
     
     sessionStorage.removeItem('guestInfo');
     navigate('/');
