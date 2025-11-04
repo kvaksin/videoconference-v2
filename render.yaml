@@ -36,7 +36,22 @@ services:
       echo "==> Checking if index.html exists:"
       test -f server/dist/public/index.html && echo "✅ index.html found!" || echo "❌ index.html NOT found!"
       echo "==> Build complete!"
-    startCommand: cd server && npm start
+    startCommand: |
+      echo "==> Preparing to start server..."
+      echo "==> Current directory: $(pwd)"
+      echo "==> Checking for client build..."
+      if [ -d "client/dist" ]; then
+        echo "==> Client dist found, copying to server/dist/public/..."
+        mkdir -p server/dist/public
+        cp -rv client/dist/* server/dist/public/
+        echo "==> Verification - files in server/dist/public/:"
+        ls -la server/dist/public/
+      else
+        echo "==> WARNING: client/dist not found!"
+        ls -la client/ || echo "client directory not found"
+      fi
+      echo "==> Starting server..."
+      cd server && npm start
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
