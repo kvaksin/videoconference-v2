@@ -83,9 +83,11 @@ curl https://your-api-service.onrender.com/health
 
 ### Common Issues
 1. **Build Failures**: Check Node.js version compatibility
-2. **Data Directory Issues**: Verify disk mount path in `render.yaml`
-3. **CORS Errors**: Ensure frontend and backend URLs are correctly configured
-4. **Socket.io Issues**: Verify WebSocket connections work in production
+2. **TypeScript Errors**: All TypeScript dependencies are in `dependencies` for build compatibility
+3. **Data Directory Issues**: Verify disk mount path in `render.yaml`
+4. **CORS Errors**: Ensure frontend and backend URLs are correctly configured
+5. **Socket.io Issues**: Verify WebSocket connections work in production
+6. **TS2688 Error**: Fixed by moving `@types/node` and `typescript` to `dependencies`
 
 ### Logs Access
 - Backend logs: Render dashboard → videoconference-api → Logs
