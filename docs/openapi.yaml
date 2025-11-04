@@ -1,0 +1,280 @@
+openapi: 3.0.0
+info:
+  title: Video Conference API
+  description: API for video conferencing application
+  version: 2.0.0
+servers:
+  - url: http://localhost:3001
+    description: Development server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+          enum: [admin, user]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Meeting:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        hostId:
+          type: string
+        scheduledAt:
+          type: string
+          format: date-time
+        duration:
+          type: number
+        participants:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+          enum: [scheduled, active, completed, cancelled]
+        roomId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+
+paths:
+  /api/auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+                - name
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+                name:
+                  type: string
+      responses:
+        '201':
+          description: User registered successfully
+        '400':
+          description: Bad request
+
+  /api/auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+        '401':
+          description: Invalid credentials
+
+  /api/auth/me:
+    get:
+      tags:
+        - Authentication
+      summary: Get current user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Current user information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+
+  /api/meetings:
+    get:
+      tags:
+        - Meetings
+      summary: Get user's meetings
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of meetings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Meeting'
+
+    post:
+      tags:
+        - Meetings
+      summary: Create a new meeting
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - scheduledAt
+                - duration
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                scheduledAt:
+                  type: string
+                  format: date-time
+                duration:
+                  type: number
+                participants:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '201':
+          description: Meeting created successfully
+
+  /api/meetings/{id}:
+    get:
+      tags:
+        - Meetings
+      summary: Get meeting by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Meeting details
+
+    put:
+      tags:
+        - Meetings
+      summary: Update meeting
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Meeting updated successfully
+
+    delete:
+      tags:
+        - Meetings
+      summary: Delete meeting
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Meeting deleted successfully
+
+  /api/admin/users:
+    get:
+      tags:
+        - Admin
+      summary: Get all users
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of all users
+
+  /api/admin/meetings:
+    get:
+      tags:
+        - Admin
+      summary: Get all meetings
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of all meetings
+
+  /api/admin/stats:
+    get:
+      tags:
+        - Admin
+      summary: Get system statistics
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: System statistics
