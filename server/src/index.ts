@@ -110,16 +110,37 @@ io.on('connection', (socket) => {
   });
 
   // WebRTC signaling
-  socket.on('offer', (roomId: string, offer: any) => {
-    socket.to(roomId).emit('offer', offer, socket.id);
+  socket.on('offer', (roomId: string, offer: any, targetSocketId?: string) => {
+    console.log(`Offer from ${socket.id} to ${targetSocketId || 'room'} in ${roomId}`);
+    if (targetSocketId) {
+      // Send to specific peer
+      io.to(targetSocketId).emit('offer', offer, socket.id);
+    } else {
+      // Broadcast to room (for backward compatibility)
+      socket.to(roomId).emit('offer', offer, socket.id);
+    }
   });
 
-  socket.on('answer', (roomId: string, answer: any) => {
-    socket.to(roomId).emit('answer', answer, socket.id);
+  socket.on('answer', (roomId: string, answer: any, targetSocketId?: string) => {
+    console.log(`Answer from ${socket.id} to ${targetSocketId || 'room'} in ${roomId}`);
+    if (targetSocketId) {
+      // Send to specific peer
+      io.to(targetSocketId).emit('answer', answer, socket.id);
+    } else {
+      // Broadcast to room (for backward compatibility)
+      socket.to(roomId).emit('answer', answer, socket.id);
+    }
   });
 
-  socket.on('ice-candidate', (roomId: string, candidate: any) => {
-    socket.to(roomId).emit('ice-candidate', candidate, socket.id);
+  socket.on('ice-candidate', (roomId: string, candidate: any, targetSocketId?: string) => {
+    console.log(`ICE candidate from ${socket.id} to ${targetSocketId || 'room'} in ${roomId}`);
+    if (targetSocketId) {
+      // Send to specific peer
+      io.to(targetSocketId).emit('ice-candidate', candidate, socket.id);
+    } else {
+      // Broadcast to room (for backward compatibility)
+      socket.to(roomId).emit('ice-candidate', candidate, socket.id);
+    }
   });
 
   // Chat

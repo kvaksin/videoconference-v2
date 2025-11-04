@@ -73,9 +73,16 @@ export default function MeetingPage() {
 
   const setupSocketListeners = (_roomId: string) => {
     socketService.on('user-joined', handleUserJoined);
-    socketService.on('offer', handleOffer);
-    socketService.on('answer', handleAnswer);
-    socketService.on('ice-candidate', handleIceCandidate);
+    // WebRTC signaling - server sends (data, senderSocketId)
+    socketService.on('offer', (offer: RTCSessionDescriptionInit, senderSocketId: string) => {
+      handleOffer(offer, senderSocketId);
+    });
+    socketService.on('answer', (answer: RTCSessionDescriptionInit, senderSocketId: string) => {
+      handleAnswer(answer, senderSocketId);
+    });
+    socketService.on('ice-candidate', (candidate: RTCIceCandidateInit, senderSocketId: string) => {
+      handleIceCandidate(candidate, senderSocketId);
+    });
     socketService.on('chat-message', handleChatMessage);
     socketService.on('name-changed', handleNameChanged);
     
@@ -128,76 +135,140 @@ export default function MeetingPage() {
   const handleUserJoined = async (userId: string) => {
     console.log('User joined:', userId);
     if (localStream) {
-      await createOffer();
+      await createOffer(userId);
     }
   };
 
-  const createOffer = async () => {
+  const createOffer = async (remoteSocketId?: string) => {
     if (!meeting?.roomId) return;
 
+    console.log('Creating offer for remote peer:', remoteSocketId);
+
+    // Close existing connection if any
+    if (peerConnection.current) {
+      peerConnection.current.close();
+    }
+
     peerConnection.current = new RTCPeerConnection({
-      iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
+      iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' }
+      ],
     });
 
+    // Add local tracks to peer connection
     localStream?.getTracks().forEach((track) => {
+      console.log('Adding local track to peer connection:', track.kind);
       peerConnection.current?.addTrack(track, localStream);
     });
 
+    // Handle incoming remote tracks
     peerConnection.current.ontrack = (event) => {
-      if (remoteVideoRef.current) {
+      console.log('Received remote track:', event.track.kind);
+      if (remoteVideoRef.current && event.streams[0]) {
         remoteVideoRef.current.srcObject = event.streams[0];
+        console.log('Set remote video stream');
       }
     };
 
+    // Handle ICE candidates
     peerConnection.current.onicecandidate = (event) => {
       if (event.candidate && meeting.roomId) {
-        socketService.sendIceCandidate(meeting.roomId, event.candidate.toJSON());
+        console.log('Sending ICE candidate');
+        socketService.getSocket()?.emit('ice-candidate', meeting.roomId, event.candidate.toJSON(), remoteSocketId);
       }
     };
 
+    // Log connection state changes
+    peerConnection.current.onconnectionstatechange = () => {
+      console.log('Connection state:', peerConnection.current?.connectionState);
+    };
+
+    peerConnection.current.oniceconnectionstatechange = () => {
+      console.log('ICE connection state:', peerConnection.current?.iceConnectionState);
+    };
+
+    // Create and send offer
     const offer = await peerConnection.current.createOffer();
     await peerConnection.current.setLocalDescription(offer);
-    socketService.sendOffer(meeting.roomId, offer);
+    console.log('Sending offer');
+    socketService.getSocket()?.emit('offer', meeting.roomId, offer, remoteSocketId);
   };
 
-  const handleOffer = async (offer: RTCSessionDescriptionInit) => {
+  const handleOffer = async (offer: RTCSessionDescriptionInit, senderSocketId: string) => {
     if (!meeting?.roomId) return;
 
+    console.log('Received offer from:', senderSocketId);
+
+    // Close existing connection if any
+    if (peerConnection.current) {
+      peerConnection.current.close();
+    }
+
     peerConnection.current = new RTCPeerConnection({
-      iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
+      iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' }
+      ],
     });
 
+    // Add local tracks
     localStream?.getTracks().forEach((track) => {
+      console.log('Adding local track to peer connection:', track.kind);
       peerConnection.current?.addTrack(track, localStream);
     });
 
+    // Handle incoming remote tracks
     peerConnection.current.ontrack = (event) => {
-      if (remoteVideoRef.current) {
+      console.log('Received remote track:', event.track.kind);
+      if (remoteVideoRef.current && event.streams[0]) {
         remoteVideoRef.current.srcObject = event.streams[0];
+        console.log('Set remote video stream');
       }
     };
 
+    // Handle ICE candidates
     peerConnection.current.onicecandidate = (event) => {
       if (event.candidate && meeting.roomId) {
-        socketService.sendIceCandidate(meeting.roomId, event.candidate.toJSON());
+        console.log('Sending ICE candidate');
+        socketService.getSocket()?.emit('ice-candidate', meeting.roomId, event.candidate.toJSON(), senderSocketId);
       }
     };
 
+    // Log connection state changes
+    peerConnection.current.onconnectionstatechange = () => {
+      console.log('Connection state:', peerConnection.current?.connectionState);
+    };
+
+    peerConnection.current.oniceconnectionstatechange = () => {
+      console.log('ICE connection state:', peerConnection.current?.iceConnectionState);
+    };
+
+    // Set remote description and create answer
     await peerConnection.current.setRemoteDescription(new RTCSessionDescription(offer));
     const answer = await peerConnection.current.createAnswer();
     await peerConnection.current.setLocalDescription(answer);
-    socketService.sendAnswer(meeting.roomId, answer);
+    console.log('Sending answer to:', senderSocketId);
+    socketService.getSocket()?.emit('answer', meeting.roomId, answer, senderSocketId);
   };
 
-  const handleAnswer = async (answer: RTCSessionDescriptionInit) => {
+  const handleAnswer = async (answer: RTCSessionDescriptionInit, senderSocketId: string) => {
+    console.log('Received answer from:', senderSocketId);
     if (peerConnection.current) {
       await peerConnection.current.setRemoteDescription(new RTCSessionDescription(answer));
+      console.log('Set remote description from answer');
     }
   };
 
-  const handleIceCandidate = async (candidate: RTCIceCandidateInit) => {
+  const handleIceCandidate = async (candidate: RTCIceCandidateInit, senderSocketId: string) => {
+    console.log('Received ICE candidate from:', senderSocketId);
     if (peerConnection.current) {
-      await peerConnection.current.addIceCandidate(new RTCIceCandidate(candidate));
+      try {
+        await peerConnection.current.addIceCandidate(new RTCIceCandidate(candidate));
+        console.log('Added ICE candidate');
+      } catch (error) {
+        console.error('Error adding ICE candidate:', error);
+      }
     }
   };
 
