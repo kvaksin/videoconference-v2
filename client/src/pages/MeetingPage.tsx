@@ -71,7 +71,7 @@ export default function MeetingPage() {
     }
   };
 
-  const setupSocketListeners = (roomId: string) => {
+  const setupSocketListeners = (_roomId: string) => {
     socketService.on('user-joined', handleUserJoined);
     socketService.on('offer', handleOffer);
     socketService.on('answer', handleAnswer);

@@ -1,23 +1,18 @@
 import { Response } from 'express';
 import { db } from '../services/database.service';
 import { authService } from '../services/auth.service';
-import { meetingService } from '../services/meeting.service';
 import { AuthRequest } from '../middleware/auth.middleware';
 import { User, Meeting } from '../models';
 import { ApiResponse } from '../types';
 
 export class AdminController {
-  async getAllUsers(req: AuthRequest, res: Response): Promise<void> {
+  async getAllUsers(_req: AuthRequest, res: Response): Promise<void> {
     try {
       const users = await db.read<User>('users');
-      
-      // Remove passwords from response
-      const usersWithoutPasswords = users.map(({ password, ...user }) => user);
-
       res.json({
         success: true,
-        data: usersWithoutPasswords,
-      } as ApiResponse);
+        data: users,
+      } as ApiResponse<User[]>);
     } catch (error: any) {
       res.status(500).json({
         success: false,
@@ -26,14 +21,14 @@ export class AdminController {
     }
   }
 
-  async getAllMeetings(req: AuthRequest, res: Response): Promise<void> {
+  async getAllMeetings(_req: AuthRequest, res: Response): Promise<void> {
     try {
-      const meetings = await meetingService.getAllMeetings();
+      const meetings = await db.read<Meeting>('meetings');
 
       res.json({
         success: true,
         data: meetings,
-      } as ApiResponse);
+      } as ApiResponse<Meeting[]>);
     } catch (error: any) {
       res.status(500).json({
         success: false,
@@ -77,7 +72,7 @@ export class AdminController {
     }
   }
 
-  async getStats(req: AuthRequest, res: Response): Promise<void> {
+  async getStats(_req: AuthRequest, res: Response): Promise<void> {
     try {
       const users = await db.read<User>('users');
       const meetings = await db.read<Meeting>('meetings');

@@ -7,7 +7,7 @@ import type { Availability, MeetingRequest } from '../types';
 export default function AvailabilityPage() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [availability, setAvailability] = useState<Availability[]>([]);
+  const [_availability, setAvailability] = useState<Availability[]>([]);
   const [pendingRequests, setPendingRequests] = useState<MeetingRequest[]>([]);
   const [pendingCount, setPendingCount] = useState(0);
   const [loading, setLoading] = useState(true);

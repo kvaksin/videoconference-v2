@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import { config } from '../config';
 
 export class DatabaseService {
   private dataDir: string;

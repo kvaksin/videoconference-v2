@@ -20,15 +20,23 @@ class ApiService {
   constructor() {
     // Use environment variable in production, localhost in development
     const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    const baseURL = isDevelopment 
-      ? 'http://localhost:3002/api' 
-      : (import.meta.env.VITE_API_URL || '/api');
+    let baseURL: string;
+    
+    if (isDevelopment) {
+      baseURL = 'http://localhost:3002/api';
+    } else {
+      // In production, use the VITE_API_URL if available, otherwise construct from current domain
+      baseURL = import.meta.env.VITE_API_URL || `${window.location.protocol}//${window.location.hostname}/api`;
+      // Remove any trailing slash and ensure we have /api
+      baseURL = baseURL.replace(/\/+$/, '') + (baseURL.endsWith('/api') ? '' : '/api');
+    }
     
     this.api = axios.create({
       baseURL,
       headers: {
         'Content-Type': 'application/json',
       },
+      timeout: 10000, // 10 second timeout for production
     });
 
     // Add auth token to requests
