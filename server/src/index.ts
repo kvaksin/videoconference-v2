@@ -51,6 +51,28 @@ app.use('/api/meeting-requests', meetingRequestRoutes);
 // API Documentation
 try {
   const swaggerDocument = YAML.load(path.join(__dirname, '../docs/openapi.yaml'));
+  
+  // Set server URL based on environment
+  if (config.nodeEnv === 'production') {
+    swaggerDocument.servers = [
+      {
+        url: 'https://videoconference-v2.onrender.com',
+        description: 'Production server'
+      }
+    ];
+  } else {
+    swaggerDocument.servers = [
+      {
+        url: `http://localhost:${config.port}`,
+        description: 'Development server'
+      },
+      {
+        url: 'https://videoconference-v2.onrender.com',
+        description: 'Production server'
+      }
+    ];
+  }
+  
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 } catch (error) {
   console.warn('OpenAPI documentation not found. API docs will not be available.');
