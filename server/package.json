@@ -11,6 +11,7 @@
     "dev": "tsx watch src/index.ts",
     "prebuild": "node scripts/prebuild.js",
     "build": "npm run prebuild && tsc && node scripts/ensure-data-dir.js",
+    "prestart": "node scripts/copy-static-files.js",
     "start": "node scripts/ensure-data-dir.js && node dist/index.js",
     "lint": "eslint src --ext .ts",
     "typecheck": "tsc --noEmit"
