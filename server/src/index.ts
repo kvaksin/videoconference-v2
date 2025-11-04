@@ -36,6 +36,11 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
+// Health check (before other routes)
+app.get('/health', (_req, res) => {
+  res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/meetings', meetingRoutes);
@@ -51,19 +56,28 @@ try {
   console.warn('OpenAPI documentation not found. API docs will not be available.');
 }
 
-// Health check
-app.get('/health', (_req, res) => {
-  res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
-});
-
 // Serve static files in production
 if (config.nodeEnv === 'production') {
+  // Serve static assets (CSS, JS, images)
+  app.use(express.static(path.join(__dirname, 'public')));
+  
+  // Serve index.html for all non-API routes (SPA routing)
   app.get('*', (_req, res) => {
-    res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+    const indexPath = path.join(__dirname, 'public', 'index.html');
+    res.sendFile(indexPath, (err) => {
+      if (err) {
+        console.error('Error serving index.html:', err);
+        res.status(404).json({ 
+          success: false, 
+          error: 'Frontend not found. Please ensure the build completed successfully.',
+          path: indexPath
+        });
+      }
+    });
   });
 }
 
-// Error handler
+// Error handler (must be last)
 app.use(errorHandler);
 
 // Socket.IO for real-time communication
