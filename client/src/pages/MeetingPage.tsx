@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { apiService } from '../services/api.service';
 import { socketService } from '../services/socket.service';
+import { webrtcConfig } from '../config/webrtc.config';
 import type { Meeting, ChatMessage } from '../types';
 
 export default function MeetingPage() {
@@ -155,12 +156,7 @@ export default function MeetingPage() {
       peerConnection.current.close();
     }
 
-    peerConnection.current = new RTCPeerConnection({
-      iceServers: [
-        { urls: 'stun:stun.l.google.com:19302' },
-        { urls: 'stun:stun1.l.google.com:19302' }
-      ],
-    });
+    peerConnection.current = new RTCPeerConnection(webrtcConfig);
 
     // Add local tracks to peer connection
     localStream?.getTracks().forEach((track) => {
@@ -211,12 +207,7 @@ export default function MeetingPage() {
       peerConnection.current.close();
     }
 
-    peerConnection.current = new RTCPeerConnection({
-      iceServers: [
-        { urls: 'stun:stun.l.google.com:19302' },
-        { urls: 'stun:stun1.l.google.com:19302' }
-      ],
-    });
+    peerConnection.current = new RTCPeerConnection(webrtcConfig);
 
     // Add local tracks
     localStream?.getTracks().forEach((track) => {
