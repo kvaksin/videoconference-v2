@@ -14,6 +14,7 @@ import meetingRoutes from './routes/meeting.routes';
 import adminRoutes from './routes/admin.routes';
 import availabilityRoutes from './routes/availability.routes';
 import meetingRequestRoutes from './routes/meeting-request.routes';
+import contactCenterRoutes from './routes/contact-center.routes';
 
 const app = express();
 const httpServer = createServer(app);
@@ -47,6 +48,7 @@ app.use('/api/meetings', meetingRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/availability', availabilityRoutes);
 app.use('/api/meeting-requests', meetingRequestRoutes);
+app.use('/api/contact-center', contactCenterRoutes);
 
 // API Documentation
 try {

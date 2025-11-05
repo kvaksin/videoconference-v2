@@ -105,6 +105,7 @@ export default function DashboardPage() {
             <span className="user-greeting">Welcome, {user?.name}!</span>
             <Link to="/calendar" className="nav-link">📅 Calendar</Link>
             <Link to="/availability" className="nav-link">⏰ Availability</Link>
+            <Link to="/contact-center" className="nav-link">📞 Contact Center</Link>
             <Link to="/settings" className="nav-link">Settings</Link>
             {user?.role === 'admin' && (
               <Link to="/admin" className="nav-link">Admin Panel</Link>

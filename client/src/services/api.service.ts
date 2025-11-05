@@ -222,6 +222,11 @@ class ApiService {
     const response = await this.api.put(`/admin/users/${id}/role`, { role });
     return response.data.data!;
   }
+
+  // Alias for convenience
+  async getUsers(): Promise<User[]> {
+    return this.getAllUsers();
+  }
 }
 
 export const apiService = new ApiService();

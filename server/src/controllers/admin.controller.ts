@@ -172,10 +172,10 @@ export class AdminController {
       const { id } = req.params;
       const { role } = req.body;
 
-      if (!['user', 'admin'].includes(role)) {
+      if (!['user', 'admin', 'agent', 'supervisor'].includes(role)) {
         res.status(400).json({
           success: false,
-          error: 'Invalid role type',
+          error: 'Invalid role type. Must be one of: user, agent, supervisor, admin',
         } as ApiResponse);
         return;
       }

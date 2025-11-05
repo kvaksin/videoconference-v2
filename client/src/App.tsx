@@ -15,6 +15,8 @@ import GuestMeetingPage from './pages/GuestMeetingPage';
 import BookingPage from './pages/BookingPage';
 import AvailabilityPage from './pages/AvailabilityPage';
 import RequestMeetingPage from './pages/RequestMeetingPage';
+import ContactCenterPage from './pages/ContactCenterPage';
+import CallFlowBuilderPage from './pages/CallFlowBuilderPage';
 import './styles/global.css';
 
 // Component to redirect legacy guest URLs
@@ -105,6 +107,22 @@ function AppRoutes() {
           <AdminRoute>
             <AdminPage />
           </AdminRoute>
+        }
+      />
+      <Route
+        path="/contact-center"
+        element={
+          <PrivateRoute>
+            <ContactCenterPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/contact-center/call-flow-builder"
+        element={
+          <PrivateRoute>
+            <CallFlowBuilderPage />
+          </PrivateRoute>
         }
       />
     </Routes>
