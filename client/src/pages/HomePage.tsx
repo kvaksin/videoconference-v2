@@ -37,9 +37,11 @@ const HomePage: React.FC = () => {
             <span className="logo-text">VaxCall</span>
           </div>
           <div className="nav-links">
+            <Link to="/features" className="nav-link">Features</Link>
             {isAuthenticated ? (
               <>
                 <Link to="/dashboard" className="nav-link">Dashboard</Link>
+                <Link to="/contact-center" className="nav-link">Contact Center</Link>
                 {user?.role === 'admin' && (
                   <Link to="/admin" className="nav-link">Admin Panel</Link>
                 )}
@@ -196,13 +198,93 @@ const HomePage: React.FC = () => {
               </p>
             </div>
             <div className="feature-card">
-              <div className="feature-icon">�</div>
+              <div className="feature-icon">🔔</div>
               <h3 className="feature-title">Real-time Notifications</h3>
               <p className="feature-description">
                 Instant notifications for meeting invitations, participant join/leave events, and chat messages.
               </p>
             </div>
+            <div className="feature-card">
+              <div className="feature-icon">📞</div>
+              <h3 className="feature-title">Contact Center</h3>
+              <p className="feature-description">
+                Professional contact center with intelligent call routing, queue management, and agent distribution.
+              </p>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon">🎯</div>
+              <h3 className="feature-title">Visual Call Flow Builder</h3>
+              <p className="feature-description">
+                Drag-and-drop interface to design custom call flows with IVR menus, queues, and routing strategies.
+              </p>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon">👨‍💼</div>
+              <h3 className="feature-title">Multi-Role Support</h3>
+              <p className="feature-description">
+                Agent, Supervisor, and Admin roles with dedicated interfaces for call handling and monitoring.
+              </p>
+            </div>
           </div>
+        </div>
+      </section>
+
+      {/* Contact Center Section */}
+      <section className="contact-center-section" style={{
+        padding: '80px 0',
+        backgroundColor: '#f8f9fa',
+      }}>
+        <div className="container">
+          <div style={{ textAlign: 'center', marginBottom: '60px' }}>
+            <h2 className="section-title" style={{ fontSize: '36px', marginBottom: '16px' }}>
+              Enterprise Contact Center Solution
+            </h2>
+            <p style={{ fontSize: '18px', color: '#6c757d', maxWidth: '800px', margin: '0 auto' }}>
+              Transform customer communications with our integrated contact center platform featuring intelligent routing, real-time analytics, and seamless agent management.
+            </p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '30px', marginBottom: '60px' }}>
+            <div style={{ backgroundColor: 'white', padding: '30px', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+              <div style={{ fontSize: '48px', marginBottom: '16px' }}>⏰</div>
+              <h3 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '12px' }}>Smart Queue Management</h3>
+              <p style={{ color: '#6c757d', lineHeight: '1.6' }}>
+                Create and manage call queues with customizable settings. Control max queue size, wait times, and assign agents dynamically.
+              </p>
+            </div>
+
+            <div style={{ backgroundColor: 'white', padding: '30px', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+              <div style={{ fontSize: '48px', marginBottom: '16px' }}>🔄</div>
+              <h3 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '12px' }}>Intelligent Routing</h3>
+              <p style={{ color: '#6c757d', lineHeight: '1.6' }}>
+                Four routing strategies: Round-robin, Longest-idle, Skill-based, and Priority. Choose the best fit for your team.
+              </p>
+            </div>
+
+            <div style={{ backgroundColor: 'white', padding: '30px', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+              <div style={{ fontSize: '48px', marginBottom: '16px' }}>📊</div>
+              <h3 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '12px' }}>Real-time Analytics</h3>
+              <p style={{ color: '#6c757d', lineHeight: '1.6' }}>
+                Monitor queue performance, agent statistics, average wait times, and call volumes in real-time dashboards.
+              </p>
+            </div>
+
+            <div style={{ backgroundColor: 'white', padding: '30px', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+              <div style={{ fontSize: '48px', marginBottom: '16px' }}>🎨</div>
+              <h3 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '12px' }}>Visual Flow Designer</h3>
+              <p style={{ color: '#6c757d', lineHeight: '1.6' }}>
+                Build complex call flows visually with drag-and-drop nodes for IVR, transfers, voicemail, time conditions, and more.
+              </p>
+            </div>
+          </div>
+
+          {isAuthenticated && (
+            <div style={{ textAlign: 'center' }}>
+              <Link to="/contact-center" className="btn btn-primary btn-large">
+                Open Contact Center
+              </Link>
+            </div>
+          )}
         </div>
       </section>
 

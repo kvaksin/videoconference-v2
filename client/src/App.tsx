@@ -17,6 +17,7 @@ import AvailabilityPage from './pages/AvailabilityPage';
 import RequestMeetingPage from './pages/RequestMeetingPage';
 import ContactCenterPage from './pages/ContactCenterPage';
 import CallFlowBuilderPage from './pages/CallFlowBuilderPage';
+import FeaturesPage from './pages/FeaturesPage';
 import './styles/global.css';
 
 // Component to redirect legacy guest URLs
@@ -49,6 +50,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
+      <Route path="/features" element={<FeaturesPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       
